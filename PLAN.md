@@ -7,10 +7,10 @@
 
 ## 단계 1: 프로젝트 설정 및 기반 구축 (1-2일)
 
-- [ ] **1.1: 환경 설정**
-    - [ ] Conda 환경 생성
-    - [ ] `requirements.txt`의 모든 패키지 설치
-    - [ ] 주요 라이브러리(pandas, lightgbm, statsmodels, sktime)를 임포트하여 설치 확인
+- [x] **1.1: 환경 설정**
+    - [x] Conda 환경 생성
+    - [x] `requirements.txt`의 모든 패키지 설치
+    - [x] 주요 라이브러리(pandas, lightgbm, statsmodels, sktime)를 임포트하여 설치 확인
 
 - [x] **1.2: 디렉토리 구조 생성**
     - [x] `data/raw`, `data/processed` 디렉토리 생성
