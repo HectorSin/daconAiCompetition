@@ -20,14 +20,14 @@
     - [x] `models` 디렉토리 생성
     - [x] `output` 디렉토리 생성
 
-- [ ] **1.3: 설정 (`config.py`)**
-    - [ ] `config.py` 생성
-    - [ ] `Config` 클래스 구현
-    - [ ] `SEED` 추가
-    - [ ] 모든 디렉토리에 대한 `Path` 변수 추가
-    - [ ] 검증 및 예측 날짜 경계 추가
-    - [ ] `LGBM_PARAMS` 플레이스홀더 추가
-    - [ ] 공행성 탐지 파라미터 (`CCF_LAG_MAX` 등) 추가
+- [x] **1.3: 설정 (`config.py`)**
+    - [x] `config.py` 생성
+    - [x] `Config` 클래스 구현
+    - [x] `SEED` 추가
+    - [x] 모든 디렉토리에 대한 `Path` 변수 추가
+    - [x] 검증 및 예측 날짜 경계 추가
+    - [x] `LGBM_PARAMS` 플레이스홀더 추가
+    - [x] 공행성 탐지 파라미터 (`CCF_LAG_MAX` 등) 추가
 
 ---
 
