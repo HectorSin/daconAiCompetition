@@ -6,8 +6,10 @@
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Dict
 import logging
+from statsmodels.tsa.stattools import adfuller, kpss
+from statsmodels.tsa.seasonal import STL
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -211,3 +213,203 @@ def preprocess_pipeline(file_path: Path,
         log_outliers(df_wide)
 
     return df_wide
+
+
+def check_stationarity_adf(series: pd.Series,
+                          significance_level: float = 0.05) -> Dict:
+    """
+    ADF (Augmented Dickey-Fuller) 검정으로 정상성을 테스트합니다.
+
+    귀무가설(H0): 시계열이 비정상성(단위근 존재)
+    p-value < 0.05 이면 귀무가설 기각 -> 정상성
+
+    Parameters:
+    -----------
+    series : pd.Series
+        테스트할 시계열 데이터
+    significance_level : float
+        유의수준 (기본값: 0.05)
+
+    Returns:
+    --------
+    Dict
+        테스트 결과 딕셔너리
+    """
+    result = adfuller(series.dropna())
+
+    return {
+        'test': 'ADF',
+        'statistic': result[0],
+        'p_value': result[1],
+        'n_lags': result[2],
+        'n_obs': result[3],
+        'critical_values': result[4],
+        'is_stationary': bool(result[1] < significance_level)
+    }
+
+
+def check_stationarity_kpss(series: pd.Series,
+                           significance_level: float = 0.05,
+                           regression: str = 'c') -> Dict:
+    """
+    KPSS (Kwiatkowski-Phillips-Schmidt-Shin) 검정으로 정상성을 테스트합니다.
+
+    귀무가설(H0): 시계열이 정상성
+    p-value < 0.05 이면 귀무가설 기각 -> 비정상성
+
+    Parameters:
+    -----------
+    series : pd.Series
+        테스트할 시계열 데이터
+    significance_level : float
+        유의수준 (기본값: 0.05)
+    regression : str
+        'c' (상수) 또는 'ct' (상수+추세)
+
+    Returns:
+    --------
+    Dict
+        테스트 결과 딕셔너리
+    """
+    result = kpss(series.dropna(), regression=regression, nlags='auto')
+
+    return {
+        'test': 'KPSS',
+        'statistic': result[0],
+        'p_value': result[1],
+        'n_lags': result[2],
+        'critical_values': result[3],
+        'is_stationary': bool(result[1] >= significance_level)
+    }
+
+
+def check_stationarity_all_items(df_wide: pd.DataFrame,
+                                 significance_level: float = 0.05) -> pd.DataFrame:
+    """
+    모든 품목에 대해 ADF와 KPSS 정상성 검정을 수행합니다.
+
+    Parameters:
+    -----------
+    df_wide : pd.DataFrame
+        Wide format 데이터프레임 (index: date, columns: item_code)
+    significance_level : float
+        유의수준 (기본값: 0.05)
+
+    Returns:
+    --------
+    pd.DataFrame
+        각 품목의 정상성 테스트 결과
+    """
+    logger.info(f"정상성 테스트 수행 중 ({len(df_wide.columns)}개 품목)...")
+
+    results = []
+
+    for item_code in df_wide.columns:
+        series = df_wide[item_code]
+
+        # ADF 테스트
+        adf_result = check_stationarity_adf(series, significance_level)
+
+        # KPSS 테스트
+        kpss_result = check_stationarity_kpss(series, significance_level)
+
+        # 결과 요약
+        # ADF와 KPSS 모두 정상성을 나타내야 확실한 정상성
+        results.append({
+            'item_code': item_code,
+            'adf_statistic': adf_result['statistic'],
+            'adf_p_value': adf_result['p_value'],
+            'adf_is_stationary': adf_result['is_stationary'],
+            'kpss_statistic': kpss_result['statistic'],
+            'kpss_p_value': kpss_result['p_value'],
+            'kpss_is_stationary': kpss_result['is_stationary'],
+            'both_stationary': adf_result['is_stationary'] and kpss_result['is_stationary']
+        })
+
+    results_df = pd.DataFrame(results)
+
+    # 요약 통계
+    n_adf_stationary = results_df['adf_is_stationary'].sum()
+    n_kpss_stationary = results_df['kpss_is_stationary'].sum()
+    n_both_stationary = results_df['both_stationary'].sum()
+
+    logger.info(f"\n정상성 테스트 결과:")
+    logger.info(f"  ADF 정상성: {n_adf_stationary}/{len(results_df)} 품목")
+    logger.info(f"  KPSS 정상성: {n_kpss_stationary}/{len(results_df)} 품목")
+    logger.info(f"  양쪽 모두 정상성: {n_both_stationary}/{len(results_df)} 품목")
+
+    return results_df
+
+
+def decompose_stl(series: pd.Series,
+                 period: int = 12,
+                 seasonal: int = 7) -> Tuple[pd.Series, pd.Series, pd.Series]:
+    """
+    STL (Seasonal-Trend decomposition using Loess) 분해를 수행합니다.
+
+    Parameters:
+    -----------
+    series : pd.Series
+        분해할 시계열 데이터 (index는 datetime)
+    period : int
+        계절 주기 (기본값: 12 - 월별 데이터)
+    seasonal : int
+        계절 성분 평활화 창 크기 (홀수, 기본값: 7)
+
+    Returns:
+    --------
+    Tuple[pd.Series, pd.Series, pd.Series]
+        (trend, seasonal, residual) 시계열
+    """
+    # STL 분해 수행
+    stl = STL(series.dropna(), period=period, seasonal=seasonal)
+    result = stl.fit()
+
+    return result.trend, result.seasonal, result.resid
+
+
+def decompose_all_items(df_wide: pd.DataFrame,
+                       period: int = 12,
+                       seasonal: int = 7) -> Dict[str, pd.DataFrame]:
+    """
+    모든 품목에 대해 STL 분해를 수행합니다.
+
+    Parameters:
+    -----------
+    df_wide : pd.DataFrame
+        Wide format 데이터프레임
+    period : int
+        계절 주기 (기본값: 12)
+    seasonal : int
+        계절 성분 평활화 창 크기 (기본값: 7)
+
+    Returns:
+    --------
+    Dict[str, pd.DataFrame]
+        {'trend': df_trend, 'seasonal': df_seasonal, 'resid': df_resid}
+    """
+    logger.info(f"STL 분해 수행 중 ({len(df_wide.columns)}개 품목)...")
+
+    trends = {}
+    seasonals = {}
+    resids = {}
+
+    for item_code in df_wide.columns:
+        series = df_wide[item_code]
+
+        try:
+            trend, seasonal, resid = decompose_stl(series, period, seasonal)
+            trends[item_code] = trend
+            seasonals[item_code] = seasonal
+            resids[item_code] = resid
+        except Exception as e:
+            logger.warning(f"품목 {item_code} STL 분해 실패: {e}")
+            continue
+
+    logger.info(f"✓ STL 분해 완료: {len(trends)}개 품목")
+
+    return {
+        'trend': pd.DataFrame(trends),
+        'seasonal': pd.DataFrame(seasonals),
+        'resid': pd.DataFrame(resids)
+    }

@@ -55,32 +55,32 @@
 
 ## 단계 3: 핵심 분석 - EDA 및 공행성 (3-4일)
 
-- [ ] **3.1: EDA 및 전처리 (`01_eda_and_preprocessing.ipynb`, `src/preprocess.py`)**
-    - [ ] **데이터 품질:**
-        - [ ] `src/preprocess.py`에 `check_negative_values` 함수 구현
-        - [ ] `src/preprocess.py`에 `log_outliers` 함수 (IQR 사용) 구현
-    - [ ] **정상성:**
-        - [ ] 100개 항목 모두에 대해 ADF 및 KPSS 테스트를 실행하는 함수를 `src`에 구현
-        - [ ] 노트북에서 정상성 테스트 결과를 시각화하고 저장
-        - [ ] 테스트 결과에 따라 비정상 항목에 차분 적용
-    - [ ] **분해:**
-        - [ ] STL 분해를 수행하는 함수를 `src`에 구현
-        - [ ] 노트북에서 몇 가지 샘플 항목에 대한 추세, 계절성 및 잔차 구성 요소 시각화
+- [x] **3.1: EDA 및 전처리 (`01_eda_and_preprocessing.ipynb`, `src/preprocess.py`)**
+    - [x] **데이터 품질:**
+        - [x] `src/preprocess.py`에 `check_negative_values` 함수 구현
+        - [x] `src/preprocess.py`에 `log_outliers` 함수 (IQR 사용) 구현
+    - [x] **정상성:**
+        - [x] 100개 항목 모두에 대해 ADF 및 KPSS 테스트를 실행하는 함수를 `src`에 구현
+        - [x] 노트북에서 정상성 테스트 결과를 시각화하고 저장
+        - [x] 테스트 결과에 따라 비정상 항목에 차분 적용
+    - [x] **분해:**
+        - [x] STL 분해를 수행하는 함수를 `src`에 구현
+        - [x] 노트북에서 몇 가지 샘플 항목에 대한 추세, 계절성 및 잔차 구성 요소 시각화
 
-- [ ] **3.2: 공행성 탐지 (`02_comovement_detection.ipynb`, `src/comovement.py`)**
-    - [ ] **CCF:**
-        - [ ] `src/comovement.py`에 `calculate_ccf` 함수 구현
-        - [ ] 노트북에서 더미 데이터에 CCF를 실행하고 의도적으로 생성된 쌍 식별
-    - [ ] **그레인저 인과관계:**
-        - [ ] `src/comovement.py`에 `calculate_granger_causality` 함수 구현
-        - [ ] 노트북에서 함수 테스트
-    - [ ] **DTW:**
-        - [ ] `src/comovement.py`에 `calculate_dtw` 함수 구현
-        - [ ] 노트북에서 함수 테스트
-    - [ ] **다중 검정 보정:**
-        - [ ] p-value 목록에 FDR (Benjamini-Hochberg)을 적용하는 함수 구현
-        - [ ] 9,900개 쌍에 걸쳐 CCF 및 그레인저 p-value 모두에 FDR 적용
-        - [ ] 노트북의 공행성 탐지 워크플로우에 통합
+- [x] **3.2: 공행성 탐지 (`02_comovement_detection.ipynb`, `src/comovement.py`)**
+    - [x] **CCF:**
+        - [x] `src/comovement.py`에 `calculate_ccf` 함수 구현
+        - [x] 노트북에서 더미 데이터에 CCF를 실행하고 의도적으로 생성된 쌍 식별
+    - [x] **그레인저 인과관계:**
+        - [x] `src/comovement.py`에 `calculate_granger_causality` 함수 구현
+        - [x] 노트북에서 함수 테스트
+    - [x] **DTW:**
+        - [x] `src/comovement.py`에 `calculate_dtw` 함수 구현
+        - [x] 노트북에서 함수 테스트
+    - [x] **다중 검정 보정:**
+        - [x] p-value 목록에 FDR (Benjamini-Hochberg)을 적용하는 함수 구현
+        - [x] 9,900개 쌍에 걸쳐 CCF 및 그레인저 p-value 모두에 FDR 적용
+        - [x] 노트북의 공행성 탐지 워크플로우에 통합 (종합 함수 제공)
 
 ---
 
