@@ -39,10 +39,10 @@
     - [x] **중요:** 의도적인 공행성 쌍을 만드는 로직 구현 (예: `item_B(t) = f(item_A(t-k)) + noise`)
     - [x] 더미 데이터를 `data/raw/dummy_trade_data.csv`에 저장
 
-- [ ] **2.2: 초기 전처리 (`src/preprocess.py`)**
-    - [ ] `load_data` 함수 생성
-    - [ ] `pivot_data` 함수 생성 (long to wide 형식)
-    - [ ] **테스트:** `tests/test_preprocess.py`에 피벗 함수를 확인하는 간단한 테스트 작성
+- [x] **2.2: 초기 전처리 (`src/preprocess.py`)**
+    - [x] `load_data` 함수 생성
+    - [x] `pivot_data` 함수 생성 (long to wide 형식)
+    - [x] **테스트:** `tests/test_preprocess.py`에 피벗 함수를 확인하는 간단한 테스트 작성
 
 - [ ] **2.3: 초기 학습 파이프라인 (`src/train.py`)**
     - [ ] 기본 `main` 함수 생성
