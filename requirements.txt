@@ -1,0 +1,36 @@
+# requirements.txt (v2)
+
+# Core
+python==3.10.*
+pandas
+numpy
+scikit-learn
+jupyterlab
+
+# Modeling (ML)
+lightgbm
+xgboost
+catboost
+
+# Modeling (Time-Series)
+statsmodels  # CCF, ADF, KPSS, Granger, SARIMA
+prophet      # Facebook Prophet
+dtw-python   # Dynamic Time Warping
+sktime       # STL Decomposition, Time-Series CV
+
+# Hyperparameter Optimization
+optuna
+
+# Experiment Tracking
+mlflow
+
+# Testing
+pytest
+
+# Visualization
+matplotlib
+seaborn
+
+# Utility
+tqdm
+pyarrow      # Parquet I/O
