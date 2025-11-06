@@ -33,11 +33,11 @@
 
 ## 단계 2: 더미 데이터 및 초기 파이프라인 (2-3일)
 
-- [ ] **2.1: 더미 데이터 생성 (`00_dummy_data_generator.ipynb`)**
-    - [ ] 노트북 생성
-    - [ ] `date` (43개월), `item_code` (100개), `value`를 포함하는 DataFrame 생성
-    - [ ] **중요:** 의도적인 공행성 쌍을 만드는 로직 구현 (예: `item_B(t) = f(item_A(t-k)) + noise`)
-    - [ ] 더미 데이터를 `data/raw/dummy_trade_data.csv`에 저장
+- [x] **2.1: 더미 데이터 생성 (`00_dummy_data_generator.ipynb`)**
+    - [x] 노트북 생성
+    - [x] `date` (43개월), `item_code` (100개), `value`를 포함하는 DataFrame 생성
+    - [x] **중요:** 의도적인 공행성 쌍을 만드는 로직 구현 (예: `item_B(t) = f(item_A(t-k)) + noise`)
+    - [x] 더미 데이터를 `data/raw/dummy_trade_data.csv`에 저장
 
 - [ ] **2.2: 초기 전처리 (`src/preprocess.py`)**
     - [ ] `load_data` 함수 생성
