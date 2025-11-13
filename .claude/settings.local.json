@@ -7,7 +7,9 @@
       "Bash(pytest:*)",
       "Bash(/c/Users/SMART/anaconda3/envs/daconai/python.exe -m pytest tests/ -v)",
       "Bash(/c/Users/SMART/anaconda3/envs/daconai/python.exe -c:*)",
-      "mcp__ide__executeCode"
+      "mcp__ide__executeCode",
+      "Bash(cat:*)",
+      "Bash(/c/Users/SMART/anaconda3/envs/daconai/python.exe src/save_submission.py v1 0.16037 --desc \"Baseline: CCF threshold=0.3, LightGBM\")"
     ],
     "deny": [],
     "ask": []
