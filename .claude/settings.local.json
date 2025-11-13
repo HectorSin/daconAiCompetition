@@ -4,7 +4,10 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(pytest:*)"
+      "Bash(pytest:*)",
+      "Bash(/c/Users/SMART/anaconda3/envs/daconai/python.exe -m pytest tests/ -v)",
+      "Bash(/c/Users/SMART/anaconda3/envs/daconai/python.exe -c:*)",
+      "mcp__ide__executeCode"
     ],
     "deny": [],
     "ask": []

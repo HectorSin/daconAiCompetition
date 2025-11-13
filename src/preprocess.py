@@ -235,7 +235,60 @@ def check_stationarity_adf(series: pd.Series,
     Dict
         테스트 결과 딕셔너리
     """
-    result = adfuller(series.dropna())
+    series_clean = series.dropna()
+
+    # 데이터 포인트가 너무 적은 경우
+    if len(series_clean) < 12:
+        logger.warning(f"시계열 데이터 포인트가 너무 적습니다 ({len(series_clean)}개). ADF 테스트를 건너뜁니다.")
+        return {
+            'test': 'ADF',
+            'statistic': np.nan,
+            'p_value': 1.0,
+            'n_lags': 0,
+            'n_obs': len(series_clean),
+            'critical_values': {},
+            'is_stationary': False
+        }
+
+    # 상수값 체크 (모든 값이 동일한 경우)
+    if series_clean.nunique() <= 1:
+        logger.warning(f"시계열이 상수값입니다. ADF 테스트를 건너뜁니다.")
+        return {
+            'test': 'ADF',
+            'statistic': np.nan,
+            'p_value': 1.0,  # 상수는 비정상으로 간주
+            'n_lags': 0,
+            'n_obs': len(series_clean),
+            'critical_values': {},
+            'is_stationary': False
+        }
+
+    # 분산이 0인 경우 체크
+    if series_clean.var() == 0:
+        logger.warning(f"시계열의 분산이 0입니다. ADF 테스트를 건너뜁니다.")
+        return {
+            'test': 'ADF',
+            'statistic': np.nan,
+            'p_value': 1.0,
+            'n_lags': 0,
+            'n_obs': len(series_clean),
+            'critical_values': {},
+            'is_stationary': False
+        }
+
+    try:
+        result = adfuller(series_clean)
+    except ValueError as e:
+        logger.warning(f"ADF 테스트 실패: {str(e)}")
+        return {
+            'test': 'ADF',
+            'statistic': np.nan,
+            'p_value': 1.0,
+            'n_lags': 0,
+            'n_obs': len(series_clean),
+            'critical_values': {},
+            'is_stationary': False
+        }
 
     return {
         'test': 'ADF',
@@ -271,7 +324,56 @@ def check_stationarity_kpss(series: pd.Series,
     Dict
         테스트 결과 딕셔너리
     """
-    result = kpss(series.dropna(), regression=regression, nlags='auto')
+    series_clean = series.dropna()
+
+    # 데이터 포인트가 너무 적은 경우
+    if len(series_clean) < 12:
+        logger.warning(f"시계열 데이터 포인트가 너무 적습니다 ({len(series_clean)}개). KPSS 테스트를 건너뜁니다.")
+        return {
+            'test': 'KPSS',
+            'statistic': np.nan,
+            'p_value': 0.0,
+            'n_lags': 0,
+            'critical_values': {},
+            'is_stationary': False
+        }
+
+    # 상수값 체크 (모든 값이 동일한 경우)
+    if series_clean.nunique() <= 1:
+        logger.warning(f"시계열이 상수값입니다. KPSS 테스트를 건너뜁니다.")
+        return {
+            'test': 'KPSS',
+            'statistic': np.nan,
+            'p_value': 0.0,  # KPSS에서 p=0은 비정상
+            'n_lags': 0,
+            'critical_values': {},
+            'is_stationary': False
+        }
+
+    # 분산이 0인 경우 체크
+    if series_clean.var() == 0:
+        logger.warning(f"시계열의 분산이 0입니다. KPSS 테스트를 건너뜁니다.")
+        return {
+            'test': 'KPSS',
+            'statistic': np.nan,
+            'p_value': 0.0,
+            'n_lags': 0,
+            'critical_values': {},
+            'is_stationary': False
+        }
+
+    try:
+        result = kpss(series_clean, regression=regression, nlags='auto')
+    except Exception as e:
+        logger.warning(f"KPSS 테스트 실패: {str(e)}")
+        return {
+            'test': 'KPSS',
+            'statistic': np.nan,
+            'p_value': 0.0,
+            'n_lags': 0,
+            'critical_values': {},
+            'is_stationary': False
+        }
 
     return {
         'test': 'KPSS',
@@ -398,9 +500,9 @@ def decompose_all_items(df_wide: pd.DataFrame,
         series = df_wide[item_code]
 
         try:
-            trend, seasonal, resid = decompose_stl(series, period, seasonal)
+            trend, seasonal_component, resid = decompose_stl(series, period, seasonal)
             trends[item_code] = trend
-            seasonals[item_code] = seasonal
+            seasonals[item_code] = seasonal_component
             resids[item_code] = resid
         except Exception as e:
             logger.warning(f"품목 {item_code} STL 분해 실패: {e}")
