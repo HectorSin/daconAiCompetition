@@ -286,6 +286,7 @@
   - [x] `src/utils/experiment_logger.py` 생성
   - [x] `experiments/log_experiment.csv` 초기화
   - [x] 간단한 로깅 함수: `log_experiment()`, `compare_experiments()`
+  - [x] **규칙:** 모든 제출 파일 및 로그는 `output/submission_log/{YYYYMMDD_HHMMSS}/` 폴더에 저장하여 관리
 
 ### Phase 1: 즉시 실행 (1-2일) - 빠른 성과 ⭐
 
@@ -355,26 +356,6 @@
   - [ ] **Step 1: 안정성 검증**
     - [ ] Train 전반부 vs 후반부 상관관계 비교
     - [ ] 안정적인 품목 쌍만 선별 (상관관계 변화 \< 0.2)
-  - [ ] **Step 2: 임계값 최적화**
-    - [ ] 안정적인 쌍에 대해서만 임계값 조정
-    - [ ] 0.1 ~ 0.7 범위 그리드 서치
-  - [ ] 최적 임계값으로 제출 파일 재생성
-
-### Phase 2: 핵심 개선 (2-3일) - 성능 향상
-- [ ] **1.2 앙상블 모델링**
-  - [ ] `src/ensemble.py` 생성
-  - [ ] LightGBM + XGBoost + CatBoost 앙상블
-  - [ ] Weighted Average 적용
-- [ ] **2.2 고급 특징 추가**
-  - [ ] STL 분해 특징 추가
-  - [ ] 통계 특징 추가
-  - [ ] 공행성 강화 특징 추가
-- [ ] **2.3 특징 선택**
-  - [ ] `notebooks/05_feature_selection.ipynb` 생성
-  - [ ] Feature Importance 분석
-  - [ ] 상위 특징만 선택하여 재학습
-- [ ] **4.1 다중 공행성 활용**
-  - [ ] 복수 선행 품목 식별 로직 구현
   - [ ] 가중 평균 적용
 
 ### Phase 3: 고급 최적화 (2-3일) - 정밀 조정
