@@ -1,0 +1,2 @@
+timestamp,experiment_name,model_type,params,cv_score,cv_std,test_score,notes
+2025-11-22 15:22:44,global_model_baseline,LightGBM_Global,"{""n_estimators"": 1000, ""learning_rate"": 0.05, ""num_leaves"": 31, ""max_depth"": 8}",8763.215912440624,2574.370434343182,,100개 품목 통합 Global Model (item_id categorical)
