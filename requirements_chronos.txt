@@ -1,0 +1,33 @@
+# Core packages
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Time Series
+statsmodels>=0.14.0
+scipy>=1.11.0
+
+# Deep Learning
+torch>=2.0.0
+transformers>=4.30.0
+accelerate>=0.20.0
+
+# Foundation Models
+git+https://github.com/amazon-science/chronos-forecasting.git
+
+# Neural Forecasting
+neuralforecast>=1.6.0
+pytorch-lightning>=2.0.0
+
+# Tree-based Models
+lightgbm>=4.0.0
+
+# Distance Metrics
+dtaidistance>=2.3.0
+
+# Optional: Additional Foundation Models
+# nixtla  # TimeGPT (API)
+# timesfm  # Google TimesFM
+# gluonts  # Lag-Llama

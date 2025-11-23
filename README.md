@@ -3,269 +3,43 @@
 제3회 국민대학교 AI빅데이터 분석 경진대회
 국민은행 무역 데이터 분석 및 예측 프로젝트입니다.
 
-## 프로젝트 구조
-
-```
-/daconai/
-│
-├── /data/
-│   ├── /raw/            # 원본 데이터
-│   └── /processed/      # 전처리된 데이터
-│
-├── /notebooks/          # Jupyter 노트북
-│   ├── 00_dummy_data_generator.ipynb
-│   ├── 01_eda_and_preprocessing.ipynb
-│   ├── 02_comovement_detection.ipynb
-│   └── 03_forecasting_model.ipynb
-│
-├── /src/                # 소스 코드
-│   ├── preprocess.py
-│   ├── features.py
-│   ├── comovement.py
-│   ├── model_wrappers.py
-│   ├── train.py
-│   └── predict.py
-│
-├── /tests/              # 단위 테스트
-│   ├── test_preprocess.py
-│   └── test_features.py
-│
-├── /models/             # 학습된 모델
-├── /output/             # 최종 제출 파일
-│
-├── config.py            # 설정 관리
-├── requirements.txt     # 패키지 의존성
-├── PLAN.md             # 상세 프로젝트 계획
-└── TECHSPEC_PLAN.md    # 기술 명세서
-```
-
-## 환경 설정
-
-### 1. Conda 환경 생성 (Windows)
-
-#### 방법 1: 자동 설치 스크립트 사용
-
-```bash
-setup_env.bat
-```
-
-#### 방법 2: 수동 설치
-
-```bash
-# 1. Conda 환경 생성
-conda create -n daconai python=3.10 -y
-
-# 2. 환경 활성화
-conda activate daconai
-
-# 3. 패키지 설치
-pip install -r requirements.txt
-```
-
-### 2. 설치 검증
+## [배경] 
+국민대학교 경영대학원 AI빅데이터/디지털마케팅전공과 경영대학에서 ‘제3회 국민대학교 AI빅데이터 분석 경진대회’를 개최합니다.
 
-```bash
-python verify_installation.py
-```
+이번 대회는 국민대학교 경영대학원과 한국기계산업진흥회(KOAMI)이 공동으로 주최하여 품목 간 무역 연동성과 미래 예측 가능성에 대한 AI 기술의 응용을 주제로 진행됩니다.
 
-모든 패키지가 정상적으로 설치되었는지 확인합니다.
-
-### 3. 주요 라이브러리 테스트
+참가자는 100개 수입 품목의 월별 무역 데이터를 분석하여 공행성이 있는 품목 쌍을 판별하고, 선행 품목의 흐름을 바탕으로 후행 품목의 다음 달 무역량을 예측하는 알고리즘을 개발하게 됩니다.
 
-```python
-# Python 인터프리터에서 실행
-import pandas as pd
-import lightgbm as lgb
-import statsmodels.api as sm
-import sktime
+이를 통해 무역 데이터에서의 품목 간 구조적 관계를 탐색하고, 실무에 적용 가능한 예측 기반 의사결정 지원 도구로 활용될 수 있는 AI 모델의 가능성을 확인할 수 있을 것으로 기대합니다.
 
-print("✓ 모든 라이브러리 import 성공!")
-```
 
-## 사용 방법 (PLAN.md 단계별 실행 가이드)
 
-### 단계 1: 환경 설정 [완료 ✓]
+## [대회 방식]
+본 대회는 예선, 본선 두 단계로 진행됩니다.
 
-```bash
-# Conda 환경 생성
-conda create -n daconai python=3.10 -y
+🔹예선: 예선 Private 리더보드 기준 상위 20팀이 본선 진출자로 선발됩니다.
 
-# 환경 활성화
-conda activate daconai
+🔹본선: 본선 진출 20팀은 추가 학습 데이터(8월 원시 무역 데이터)를 바탕으로 모델을 추가 개선하여 제출합니다.
 
-# 패키지 설치
-pip install -r requirements.txt
+※ 본선 모델 개선을 위한 리더보드 제출은 별도 대회 페이지에서 제공되며, 추후 안내 예정입니다.
 
-# 설치 확인
-python verify_installation.py
-```
 
----
 
-### 단계 2: 더미 데이터 및 초기 파이프라인 [완료 ✓]
+## [주제]
+무역 품목 간 공행성 쌍 판별 및 후행 품목 무역량 예측 AI 모델 개발
 
-```bash
-# Jupyter Lab 실행 (더미 데이터 생성)
-jupyter lab
-# → notebooks/00_dummy_data_generator.ipynb 실행
 
-# 초기 학습 파이프라인 실행
-python src/train.py
 
-# 단위 테스트 실행
-/c/Users/SMART/anaconda3/envs/daconai/python.exe -m pytest tests/ -v
+## [설명]
+원시 무역 수입 데이터(2022년 1월 ~ 2025년 7월)를 기반으로, 품목 간 공행성(comovement)이 존재하는 선후행 쌍을 예측하고, 공행성이 있다고 판단된 경우에는 후행 품목의 다음 달(2025년 8월) 총 무역량(value)을 예측하는 AI 모델을 개발합니다.
 
-# 개별 테스트 파일
-/c/Users/SMART/anaconda3/envs/daconai/python.exe -m pytest tests/test_preprocess.py -v
-/c/Users/SMART/anaconda3/envs/daconai/python.exe -m pytest tests/test_comovement.py -v
-/c/Users/SMART/anaconda3/envs/daconai/python.exe -m pytest tests/test_stationarity.py -v
-```
+참가자는 주어진 원시 무역 데이터를 분석하여 품목 간 선후행 관계가 존재하는 공행성 쌍(A → B)을 찾아야 하며, 이후에는 선행 품목(A)의 흐름을 활용해 후행 품목(B)의 다음달의 총 무역량(value)을 예측해야 합니다.
 
----
 
-### 단계 3: EDA 및 공행성 탐지 [완료 ✓] + 실제 데이터 EDA [진행 중]
 
-```bash
-# Jupyter Lab에서 EDA 노트북 실행
-jupyter lab
+## [주최 / 주관]
+주최 : 국민대학교 경영대학원, 기계산업진흥회(KOAMI)
 
-# 실행할 노트북:
-# → notebooks/01_eda_and_preprocessing.ipynb
-#   - 실제 데이터 구조 확인
-#   - 정상성 테스트 (ADF, KPSS)
-#   - STL 분해 시각화
-#   - 품목별 시계열 플롯
+주관 : 국민대학교 경영대학, 국민대학교 경영대학원 AI빅데이터전공/디지털마케팅전공
 
-# → notebooks/02_comovement_detection.ipynb
-#   - CCF 히트맵
-#   - Granger 인과관계 네트워크
-#   - DTW 클러스터링
-#   - FDR 다중 검정 보정
-```
-
----
-
-### 단계 4: 특징 공학 및 모델링 [예정]
-
-```bash
-# 전체 모델링 파이프라인 실행
-python src/train.py
-
-# 학습된 모델 확인
-ls models/
-
-# 예측 수행
-python src/predict.py
-```
-
----
-
-### 단계 5: 하이퍼파라미터 튜닝 및 MLflow [예정]
-
-```bash
-# MLflow UI 시작
-mlflow ui
-# → http://localhost:5000 접속
-
-# Optuna 튜닝 실행 (구현 후)
-python src/tune_hyperparams.py
-```
-
----
-
-### 빠른 참조: 주요 명령어
-
-```bash
-# 환경 활성화
-conda activate daconai
-
-# 테스트 실행
-/c/Users/SMART/anaconda3/envs/daconai/python.exe -m pytest tests/ -v
-
-# 학습 실행
-python src/train.py
-
-# Jupyter Lab
-jupyter lab
-
-# MLflow UI
-mlflow ui
-```
-
-## 프로젝트 목표
-
-1. **과제 1: 공행성 탐지**
-   - CCF (Cross-Correlation Function)
-   - Granger Causality Test
-   - DTW (Dynamic Time Warping)
-   - FDR (False Discovery Rate) 다중 검정 보정
-
-2. **과제 2: 무역량 예측**
-   - LightGBM 메인 모델
-   - SARIMA, Prophet 벤치마크
-   - Time-Series Cross-Validation
-
-## 개발 진행 상황
-
-- [x] **단계 1: 프로젝트 설정 및 기반 구축** (완료)
-  - [x] Conda 환경 생성
-  - [x] 패키지 설치 및 검증
-  - [x] 프로젝트 구조 생성
-  - [x] config.py 설정
-
-- [x] **단계 2: 더미 데이터 및 초기 파이프라인** (완료)
-  - [x] 더미 데이터 생성 (43개월, 100개 품목)
-  - [x] 전처리 함수 구현
-  - [x] 초기 학습 파이프라인
-  - [x] 단위 테스트 작성 (24/25 통과)
-
-- [x] **단계 3: 핵심 분석 - EDA 및 공행성** (완료)
-  - [x] 정상성 테스트 (ADF, KPSS)
-  - [x] STL 분해 구현
-  - [x] CCF, Granger, DTW 공행성 탐지
-  - [x] FDR 다중 검정 보정
-  - [x] 실제 데이터 업로드 및 구조 분석
-
-- [ ] **단계 4: 특징 공학 및 모델링** (진행 예정)
-  - [ ] 실제 데이터 전처리 파이프라인 업데이트
-  - [ ] Lag, Rolling, Growth Rate 특징 생성
-  - [ ] LightGBM 모델 학습
-  - [ ] Time-Series Cross-Validation
-  - [ ] 예측 스크립트 작성
-
-- [ ] **단계 5: 개선 및 최종화** (진행 예정)
-  - [ ] Optuna 하이퍼파라미터 튜닝
-  - [ ] MLflow 실험 추적
-  - [ ] 최종 제출 파일 생성
-  - [ ] 문서화 완료
-
-자세한 계획은 [PLAN.md](PLAN.md)를 참조하세요.
-
-### 현재 상태
-- ✅ 단위 테스트: 24/25 통과 (96%)
-- ✅ 실제 데이터: 업로드 완료 (10,836 rows, 100 items, 43 months)
-- ⚠️ 데이터 이슈: 12.2% 결측값, 월별 다중 거래 (집계 필요)
-- 📋 다음 단계: 실제 데이터 EDA 및 전처리 파이프라인 업데이트
-
-자세한 테스트 결과는 [TEST_REPORT.md](TEST_REPORT.md)를 참조하세요.
-
-## 실험 추적
-
-MLflow를 사용하여 실험을 추적합니다:
-
-```bash
-# MLflow UI 실행
-mlflow ui
-
-# 브라우저에서 http://localhost:5000 접속
-```
-
-## 참고 문서
-
-- [PLAN.md](PLAN.md) - 상세 실행 계획
-- [TECHSPEC_PLAN.md](TECHSPEC_PLAN.md) - 기술 명세서
-- [config.py](config.py) - 설정 관리
-
-## 라이선스
-
-이 프로젝트는 교육 목적으로 작성되었습니다.
+운영 : 데이콘

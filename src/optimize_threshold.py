@@ -61,7 +61,7 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     print(f"출력 디렉토리: {output_dir}")
     
-    thresholds = [0.05, 0.1, 0.15, 0.2]
+    thresholds = [0.25, 0.3, 0.35, 0.4, 0.45, 0.5]  # 더 높은 임계값 테스트
     
     for threshold in thresholds:
         print(f"\n--- 임계값: {threshold} ---")
